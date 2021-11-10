@@ -3,3 +3,8 @@
 ################################################################################
 
 /bin
+/GeneralTests/bin/Debug
+/GeneralTests/obj/x86/Debug
+/obj
+/TestResults
+/_UpgradeReport_Files

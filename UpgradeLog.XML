@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="Util">
+</Property><Property Name="Solution File" Value="D:\Documents and Settings\tobins\My Documents\Work Documents\Software Projects\Util\Util.sln">
+</Property><Property Name="Date" Value="Monday, 6 December 2010">
+</Property><Property Name="Time" Value="11:30 AM">
+</Property></Properties><Event ErrorLevel="0" Project="Util" Source="Util.csproj" Description="The project file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="Util" Source="Util.csproj" Description="No Conversion Required">
+</Event><Event ErrorLevel="0" Project="" Source="Util.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="Util.sln" Description="Converted">
+</Event></UpgradeLog>
