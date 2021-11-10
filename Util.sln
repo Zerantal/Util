@@ -1,18 +1,18 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code Style Enforcer", "Code Style Enforcer", "{F8FBF981-1A80-449B-A7FC-EF2B15C68292}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\ImplementationRules.xml = ..\..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\ImplementationRules.xml
-		..\..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\NameRules.xml = ..\..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\NameRules.xml
-		..\..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\VisibilityRules.xml = ..\..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\VisibilityRules.xml
+		..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\ImplementationRules.xml = ..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\ImplementationRules.xml
+		..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\NameRules.xml = ..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\NameRules.xml
+		..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\VisibilityRules.xml = ..\..\..\..\..\Program Files\Code Style Enforcer\CustomRules\VisibilityRules.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util.csproj", "{1E22CAC4-8E90-4DD7-A754-6D1EF0845230}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util.GeneralTests", "GeneralTests\Util.GeneralTests.csproj", "{7867E9D8-0063-4C8D-AED3-97C8BFD6A232}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util.Tests", "..\Util.Tests\Util.Tests.csproj", "{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D8BE0FD4-23AE-48CC-9FD3-FE6D862D408A}"
 	ProjectSection(SolutionItems) = preProject
@@ -24,9 +24,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathLib", "..\MathLib\MathLib.csproj", "{06119B37-8AB7-47AC-A943-672FEEEEC597}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = Util.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -56,16 +53,6 @@ Global
 		{7867E9D8-0063-4C8D-AED3-97C8BFD6A232}.Release|Mixed Platforms.Build.0 = Release|x86
 		{7867E9D8-0063-4C8D-AED3-97C8BFD6A232}.Release|x86.ActiveCfg = Release|x86
 		{7867E9D8-0063-4C8D-AED3-97C8BFD6A232}.Release|x86.Build.0 = Release|x86
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{CB9A72A6-7F15-4A36-B4AE-10AA68F102C0}.Release|x86.ActiveCfg = Release|Any CPU
 		{06119B37-8AB7-47AC-A943-672FEEEEC597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{06119B37-8AB7-47AC-A943-672FEEEEC597}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06119B37-8AB7-47AC-A943-672FEEEEC597}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -81,7 +68,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_RulesLocation = 0
 		CodeStyleEnforcer_Active = -1
+		CodeStyleEnforcer_RulesLocation = 0
+		SolutionGuid = {3CCCC4D8-FF02-439F-B223-15309A7AE516}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Util.vsmdi
 	EndGlobalSection
 EndGlobal
