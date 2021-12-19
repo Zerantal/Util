@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
+// ReSharper disable UnusedMember.Global
 
 namespace Util
 {
-    // static, threadsafe wrapper for Random class
-    static public class StaticRandom
+    // static, thread-safe wrapper for Random class
+    public static class StaticRandom
     {
-        static private readonly Random R = new Random();
-        static private readonly object ObjLock = new object();
+        private static readonly Random R = new Random();
+        private static readonly object ObjLock = new object();
 
         public static int Next()
         {

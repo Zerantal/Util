@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Diagnostics.Contracts;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+// ReSharper disable UnusedMember.Global
 
 namespace Util.JavaAccessBridge
 {
@@ -21,50 +20,43 @@ namespace Util.JavaAccessBridge
 
     public class JavaControl
     {
-        private readonly IntPtr _accessibleContext;
-        private readonly Int32 _vmID;
-
-        internal JavaControl(Int32 vmID, IntPtr ac)
+        internal JavaControl(int vmId, IntPtr ac)
         {
+            if (vmId <= 0) throw new ArgumentOutOfRangeException(nameof(vmId));
             // // Contract.Requires(JAB.IsJABInitialized);
 
-            _vmID = vmID;
-            _accessibleContext = ac;
+            VirtualMachineId = vmId;
+            AccessibleContext = ac;
         }
 
-        static private JavaControl CreateControl(Int32 vmID, IntPtr ac)
+        private static JavaControl CreateControl(int vmId, IntPtr ac)
         {
             // // Contract.Requires(JAB.IsJABInitialized);
 
-            AccessibleContextInfo info;
-            bool success;            
-
-            success = UnsafeNativeMethods.getAccessibleContextInfo(vmID, ac, out info);
+            var success = UnsafeNativeMethods.getAccessibleContextInfo(vmId, ac, out var info);
             // Contract.Assert(JAB.IsJABInitialized);
             if (success)
-                return CreateControlUsingRole(vmID, ac, info.Role);
-            else
-            {
-                Trace.TraceWarning("Call to getAccessibleContextInfo failed.");
-                return new JavaControl(-1, IntPtr.Zero);
-            }               
+                return CreateControlUsingRole(vmId, ac, info.Role);
+
+            Trace.TraceWarning("Call to getAccessibleContextInfo failed.");
+            return new JavaControl(-1, IntPtr.Zero);
         }
 
-        static private JavaControl CreateControlUsingRole(Int32 vmID, IntPtr ac, string role)
+        private static JavaControl CreateControlUsingRole(int vmId, IntPtr ac, string role)
         {
             // // Contract.Requires(JAB.IsJABInitialized);
 
             switch (role)
             {
                 case JavaControlRole.Button:
-                    return new JavaButtonControl(vmID, ac);
+                    return new JavaButtonControl(vmId, ac);
 
                 case JavaControlRole.PasswordText:
                 case JavaControlRole.Text:
-                    return new JavaTextInputControl(vmID, ac);
+                    return new JavaTextInputControl(vmId, ac);
 
                 default:
-                    return new JavaControl(vmID, ac);                  
+                    return new JavaControl(vmId, ac);                  
             }
         }
 
@@ -74,47 +66,43 @@ namespace Util.JavaAccessBridge
             // // Contract.Requires(name != null);
           
             Queue<IntPtr> searchList = new Queue<IntPtr>();
-                        
-            IntPtr currentAC, childAC;
-            AccessibleContextInfo info;
-            bool success;
+
+            IntPtr childAc;
             StringBuilder controlName = new StringBuilder(JABConstants.ShortStringSize);
 
             // enqueue all child controls first
-            info = this._accessibleContextInfo;  
+            var info = AccessibleContextInfo;  
                                    
                 // add children controls to search queue
             for (int i = 0; i < info.ChildrenCount; i++)
             {
-                childAC = UnsafeNativeMethods.getAccessibleChildFromContext(_vmID, _accessibleContext, i);
-                if (childAC != IntPtr.Zero)
+                childAc = UnsafeNativeMethods.getAccessibleChildFromContext(VirtualMachineId, AccessibleContext, i);
+                if (childAc != IntPtr.Zero)
                 {
-                    searchList.Enqueue(childAC);
+                    searchList.Enqueue(childAc);
                 }
             }
             
             while (searchList.Count != 0)
             {
-                currentAC = searchList.Dequeue();
+                var currentAc = searchList.Dequeue();
                 // get context info
-                success = UnsafeNativeMethods.getAccessibleContextInfo(_vmID, currentAC, out info);
-                if (success)
-                {
-                    success = UnsafeNativeMethods.getVirtualAccessibleName(_vmID, currentAC, controlName, JABConstants.ShortStringSize);
-                    if (success)
-                    {
-                        if (name.Equals(controlName.ToString()) && info.Role.Equals(role))
-                            return CreateControlUsingRole(_vmID, currentAC, role);
+                var success = UnsafeNativeMethods.getAccessibleContextInfo(VirtualMachineId, currentAc, out info);
+                if (!success) continue;
 
-                        // add children controls to search queue
-                        for (int i = 0; i < info.ChildrenCount; i++)
-                        {
-                            childAC = UnsafeNativeMethods.getAccessibleChildFromContext(_vmID, currentAC, i);
-                            if (childAC != IntPtr.Zero)
-                            {
-                                searchList.Enqueue(childAC);
-                            }
-                        }
+                success = UnsafeNativeMethods.getVirtualAccessibleName(VirtualMachineId, currentAc, controlName, JABConstants.ShortStringSize);
+                if (!success) continue;
+
+                if (name.Equals(controlName.ToString()) && info.Role.Equals(role))
+                    return CreateControlUsingRole(VirtualMachineId, currentAc, role);
+
+                // add children controls to search queue
+                for (int i = 0; i < info.ChildrenCount; i++)
+                {
+                    childAc = UnsafeNativeMethods.getAccessibleChildFromContext(VirtualMachineId, currentAc, i);
+                    if (childAc != IntPtr.Zero)
+                    {
+                        searchList.Enqueue(childAc);
                     }
                 }
             }
@@ -123,19 +111,16 @@ namespace Util.JavaAccessBridge
 
         public JavaControl GetParent()
         {
-            IntPtr parentAC = UnsafeNativeMethods.getAccessibleParentFromContext(_vmID, _accessibleContext);
+            IntPtr parentAc = UnsafeNativeMethods.getAccessibleParentFromContext(VirtualMachineId, AccessibleContext);
 
-            if (parentAC == IntPtr.Zero)
-                return null;
-            else
-                return CreateControl(_vmID, parentAC);
+            return parentAc == IntPtr.Zero ? null : CreateControl(VirtualMachineId, parentAc);
         }
 
         public JavaControl GetChild(int childIndex)
         {
-            IntPtr childAC = UnsafeNativeMethods.getAccessibleChildFromContext(_vmID, _accessibleContext, childIndex);
+            IntPtr childAc = UnsafeNativeMethods.getAccessibleChildFromContext(VirtualMachineId, AccessibleContext, childIndex);
 
-            return CreateControl(_vmID, childAC);
+            return CreateControl(VirtualMachineId, childAc);
         }
 
         public ReadOnlyCollection<JavaControl> Children
@@ -143,15 +128,14 @@ namespace Util.JavaAccessBridge
             get
             {
                 List<JavaControl> childControls = new List<JavaControl>();
-                AccessibleContextInfo info = this._accessibleContextInfo;
-                IntPtr childAC;
+                AccessibleContextInfo info = AccessibleContextInfo;
 
                 for (int i = 0; i < info.ChildrenCount; i++)
                 {
-                    childAC = UnsafeNativeMethods.getAccessibleChildFromContext(_vmID, _accessibleContext, i);
+                    var childAc = UnsafeNativeMethods.getAccessibleChildFromContext(VirtualMachineId, AccessibleContext, i);
 
-                    if (!childAC.Equals(IntPtr.Zero))
-                        childControls.Add(new JavaControl(_vmID, childAC));
+                    if (!childAc.Equals(IntPtr.Zero))
+                        childControls.Add(new JavaControl(VirtualMachineId, childAc));
                     else
                         Trace.TraceWarning("Call to getAccessibleChildFromContext failed.");
                 }
@@ -160,15 +144,15 @@ namespace Util.JavaAccessBridge
             }
         }
 
-        public int VirtualMachineId { get { return _vmID; } }
+        public int VirtualMachineId { get; }
 
         public bool IsVisible
         {
             get
             {
-                AccessibleContextInfo info = _accessibleContextInfo;
+                AccessibleContextInfo info = AccessibleContextInfo;
 
-                return (info.States.Contains("visible"));
+                return info.States.Contains("visible");
             }
         }
 
@@ -176,7 +160,7 @@ namespace Util.JavaAccessBridge
         {
             get
             {
-                AccessibleContextInfo info = _accessibleContextInfo;
+                AccessibleContextInfo info = AccessibleContextInfo;
 
                 return info.ChildrenCount;
             }
@@ -186,35 +170,32 @@ namespace Util.JavaAccessBridge
         {
             get
             {
-                AccessibleContextInfo info = _accessibleContextInfo;
+                AccessibleContextInfo info = AccessibleContextInfo;
                 return info.Name;
             }
         }
 
-        private AccessibleContextInfo _accessibleContextInfo
+        private AccessibleContextInfo AccessibleContextInfo
         {
             get
             {
-                AccessibleContextInfo info;
-                bool success = UnsafeNativeMethods.getAccessibleContextInfo(_vmID, _accessibleContext, out info);
+                bool success = UnsafeNativeMethods.getAccessibleContextInfo(VirtualMachineId, AccessibleContext, out var info);
 
                 if (success)
                     return info;
-                else
-                {
-                    Trace.TraceError("Call to getAccessibleContextInfo failed.");
-                    return new AccessibleContextInfo();
-                }
-                    
+
+                Trace.TraceError("Call to getAccessibleContextInfo failed.");
+                return new AccessibleContextInfo();
+
             }
         }
        
 
-        protected IntPtr AccessibleContext { get { return _accessibleContext; } }
+        protected IntPtr AccessibleContext { get; }
 
         ~JavaControl()
         {
-            UnsafeNativeMethods.releaseJavaObject(_vmID, _accessibleContext);
+            UnsafeNativeMethods.releaseJavaObject(VirtualMachineId, AccessibleContext);
         }
     }
 }

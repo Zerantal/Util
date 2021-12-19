@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using System.Diagnostics.Contracts;
+// ReSharper disable UnusedMember.Global
 
 namespace Util
 {
     [Serializable]
-    public class WinApiException : Exception, ISerializable
+    public class WinApiException : Exception
     {
-        string _sourceDLL;
-        string _invokedFunction;
-        int _errorCode;
+        private string _sourceDll;
+        private string _invokedFunction;
+        private int _errorCode;
 
-        public WinApiException() : base()
+        public WinApiException()
         {           
         }
 
@@ -32,35 +29,35 @@ namespace Util
         {
             // // Contract.Requires(info != null);
 
-            _sourceDLL = info.GetString("SourceDLL");
+            _sourceDll = info.GetString("SourceDLL");
             _invokedFunction = info.GetString("InvokedFunction");            
         }
 
         public WinApiException(string message, string sourceDll, string invokedFunction, int errorCode) 
             : base(message)
         {
-            _sourceDLL = sourceDll;
+            _sourceDll = sourceDll;
             _invokedFunction = invokedFunction;
             _errorCode = errorCode;
         }
 
         public string InvokedFunction
         {
-            get { return _invokedFunction; }
-            set { _invokedFunction = value; }
+            get => _invokedFunction;
+            set => _invokedFunction = value;
         }
 
 
         public string SourceDll
         {
-            get { return _sourceDLL; }
-            set { _sourceDLL = value; }
+            get => _sourceDll;
+            set => _sourceDll = value;
         }
 
         public int ErrorCode
         {
-            get { return _errorCode; }
-            set { _errorCode = value; }
+            get => _errorCode;
+            set => _errorCode = value;
         }
 
         #region ISerializable Members
@@ -70,7 +67,7 @@ namespace Util
         {
             base.GetObjectData(info, context);
 
-            info.AddValue("SourceDLL", _sourceDLL);
+            info.AddValue("SourceDLL", _sourceDll);
             info.AddValue("InvokedFunction", _invokedFunction);
         }
 

@@ -1,24 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
+
+// ReSharper disable UnusedMember.Global
 
 namespace Util.CustomControls
 {
+    // ReSharper disable once UnusedMember.Global
     public class SelectionTableControl : TableLayoutPanel
     {
         private TableLayoutPanelCellPosition _selectedCell;
         private int _selectionWidth;
-        private Color _selectionColour = Color.Black;
 
         public event EventHandler<PanelChangedEventArgs> SelectedPanelChanged;
 
         public SelectionTableControl()
-            : base()
         {
             _selectedCell = new TableLayoutPanelCellPosition(-1, -1);
 
@@ -28,10 +25,7 @@ namespace Util.CustomControls
         [Browsable(true)]
         public TableLayoutPanelCellPosition SelectedCell
         {
-            get
-            {
-                return _selectedCell;
-            }
+            get => _selectedCell;
 
             set
             {
@@ -39,27 +33,23 @@ namespace Util.CustomControls
                     return;
 
                 _selectedCell = value;
-                this.Refresh();
+                Refresh();
             }
         }
 
         public int SelectorLineWidth
         {
-            get { return _selectionWidth; }
+            get => _selectionWidth;
             set
             {
                 // // Contract.Requires(value >= 0 && value < 256);
                 _selectionWidth = value;
 
-                this.Refresh();
+                Refresh();
             }
         }
 
-        public Color SelectionColor
-        {
-            get { return _selectionColour; }
-            set { _selectionColour = value; }
-        }
+        public Color SelectionColor { get; set; } = Color.Black;
 
         protected override void OnCellPaint(TableLayoutCellPaintEventArgs e)
         {
@@ -68,18 +58,16 @@ namespace Util.CustomControls
             base.OnCellPaint(e);
 
             Graphics g = CreateGraphics();
-            if (_selectedCell == new TableLayoutPanelCellPosition(e.Column, e.Row))
+            if (_selectedCell != new TableLayoutPanelCellPosition(e.Column, e.Row)) return;
+            using (Pen p = new Pen(SelectionColor, _selectionWidth))
             {
-                using (Pen p = new Pen(_selectionColour, _selectionWidth))
-                {
-                    g.Clear(BackColor);
-                    Rectangle cellRect = e.CellBounds;
-                    cellRect.X += _selectionWidth / 2;
-                    cellRect.Y += _selectionWidth / 2;
-                    cellRect.Width -= _selectionWidth;
-                    cellRect.Height -= _selectionWidth;
-                    g.DrawRectangle(p, cellRect);
-                }
+                g.Clear(BackColor);
+                Rectangle cellRect = e.CellBounds;
+                cellRect.X += _selectionWidth / 2;
+                cellRect.Y += _selectionWidth / 2;
+                cellRect.Width -= _selectionWidth;
+                cellRect.Height -= _selectionWidth;
+                g.DrawRectangle(p, cellRect);
             }
         }
 
@@ -91,7 +79,7 @@ namespace Util.CustomControls
 
             // Contract.Assume(e.Control != null);
             e.Control.Margin = new Padding(_selectionWidth);
-            e.Control.MouseClick += new MouseEventHandler(Control_MouseClick);                     
+            e.Control.MouseClick += Control_MouseClick;                     
         }
 
 
@@ -108,41 +96,31 @@ namespace Util.CustomControls
 
         private void Control_MouseClick(object sender, MouseEventArgs e)
         {
-            Control ctrl = sender as Control;
-            TableLayoutPanelCellPosition newCell;
+            if (!(sender is Control ctrl)) return;
+            var newCell = GetCellPosition(ctrl);
 
-            if (ctrl != null)
-            {
-                newCell = this.GetCellPosition(ctrl);
+            if (newCell == _selectedCell) return;
+            _selectedCell = newCell;
 
-                if (newCell != _selectedCell)
-                {
-                    _selectedCell = newCell;
-
-                    OnSelectedPanelChanged(new PanelChangedEventArgs(_selectedCell));
-                }
-            }
+            OnSelectedPanelChanged(new PanelChangedEventArgs(_selectedCell));
         }
 
         protected virtual void OnSelectedPanelChanged(PanelChangedEventArgs e)
         {
-            this.Refresh();
+            Refresh();
 
-            if (SelectedPanelChanged != null)
-                SelectedPanelChanged(this, e);
+            SelectedPanelChanged?.Invoke(this, e);
         }
 
     }
 
     public class PanelChangedEventArgs : EventArgs
     {
-        TableLayoutPanelCellPosition _cell;
-
         public PanelChangedEventArgs(TableLayoutPanelCellPosition cell)
         {
-            this._cell = cell;
+            Cell = cell;
         }
 
-        public TableLayoutPanelCellPosition Cell { get { return _cell; } }
+        public TableLayoutPanelCellPosition Cell { get; }
     }
 }

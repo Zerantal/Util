@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
-using System.Diagnostics.Contracts;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable ConvertToAutoPropertyWhenPossible
 
 namespace Util.JavaAccessBridge
 {
@@ -13,10 +10,10 @@ namespace Util.JavaAccessBridge
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal class AccessibleActionsToDo
     {
-        private Int32 _actionsCount;				// number of actions to do
+        private int _actionsCount;				// number of actions to do
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = JABConstants.MaxActionsToDo)]
-        AccessibleActionInfo[] _actions; // the accessible actions to do
+        private readonly AccessibleActionInfo[] _actions; // the accessible actions to do
 
         public AccessibleActionsToDo()
         {
@@ -31,7 +28,7 @@ namespace Util.JavaAccessBridge
             // // Contract.Requires(actionNames.Count() <= JABConstants.MaxActionsToDo);
             // // Contract.Requires(// Contract.ForAll(actionNames, delegate(string s) { return s != null; }));
 
-            _actionsCount = actionNames.Count();
+            _actionsCount = actionNames.Length;
             _actions = new AccessibleActionInfo[JABConstants.MaxActionsToDo];
 
             // Contract.Assume(actionNames.Length >= _actionsCount);    // for benefit of static verifier
@@ -50,19 +47,8 @@ namespace Util.JavaAccessBridge
             _actionsCount++;
         }
 
-        public Int32 ActionsCount { get { return _actionsCount; } }
+        public int ActionsCount => _actionsCount;
 
-        public ReadOnlyCollection<AccessibleActionInfo> Actions 
-        {
-            get
-            {
-                List<AccessibleActionInfo> actionToDoList = new List<AccessibleActionInfo>();
-
-                for (int i = 0; i < _actionsCount; i++)
-                    actionToDoList.Add(_actions[i]);
-
-                return new ReadOnlyCollection<AccessibleActionInfo>(_actions); 
-            }
-        }
+        public ReadOnlyCollection<AccessibleActionInfo> Actions => new ReadOnlyCollection<AccessibleActionInfo>(_actions);
     }
 }

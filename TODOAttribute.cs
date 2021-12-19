@@ -1,4 +1,5 @@
 using System;
+// ReSharper disable UnusedMember.Global
 
 namespace Util
 {
@@ -8,11 +9,9 @@ namespace Util
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public sealed class ToDoAttribute : Attribute
     {
-        private string message;
-        
         public ToDoAttribute()
         {
-            message = "No comment entered!";
+            Comment = "No comment entered!";
         }
 
         /// <summary>
@@ -21,15 +20,12 @@ namespace Util
         /// <param name="comment"></param>
         public ToDoAttribute(string comment)
         {
-            message = comment;
+            Comment = comment;
         }
 
         /// <summary>
         /// Retrieve comment for TODO entry
         /// </summary>
-        public string Comment
-        {
-            get { return message; }
-        }
+        public string Comment { get; }
     }
 }

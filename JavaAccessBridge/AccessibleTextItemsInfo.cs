@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnassignedGetOnlyAutoProperty
 
 namespace Util.JavaAccessBridge
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct AccessibleTextItemsInfo
     {
-        private char _letter;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)]
-        private string _word;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.MaxStringSize)]
-        private string _sentence;
+        public char Letter { get; }
+        [field: MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)] public string Word
+        {
+            get;
+        }
 
-        public char Letter { get { return _letter; } }
-        public string Word { get { return _word; } }
-        public string Sentence { get { return _sentence; } }
-
+        [field: MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.MaxStringSize)] public string Sentence
+        {
+            get;
+        }
     }
-};
+}

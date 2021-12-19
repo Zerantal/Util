@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 
 namespace Util
 {
+    // ReSharper disable once UnusedMember.Global
     public sealed class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         private readonly IDictionary<TKey, TValue> _sourceDictionary;
@@ -27,10 +27,7 @@ namespace Util
             return _sourceDictionary.ContainsKey(key);            
         }
 
-        public ICollection<TKey> Keys
-        {
-            get { return _sourceDictionary.Keys; }
-        }
+        public ICollection<TKey> Keys => _sourceDictionary.Keys;
 
         bool IDictionary<TKey, TValue>.Remove(TKey key)
         {
@@ -41,34 +38,19 @@ namespace Util
         {
             bool success = ContainsKey(key);
 
-            if (success)
-                value = this[key];
-            else
-                value = default(TValue);
+            value = success ? this[key] : default;
                             
             return success;            
         }
 
-        public ICollection<TValue> Values
-        {
-            get { return _sourceDictionary.Values; }
-        }
+        public ICollection<TValue> Values => _sourceDictionary.Values;
 
-        public TValue this[TKey key]
-        {
-            get { return _sourceDictionary[key]; }
-        }
+        public TValue this[TKey key] => _sourceDictionary[key];
 
         TValue IDictionary<TKey, TValue>.this[TKey key]
         {
-            get
-            {
-                return _sourceDictionary[key];                
-            }
-            set
-            {
-                throw new NotSupportedException();                
-            }
+            get => _sourceDictionary[key];
+            set => throw new NotSupportedException();
         }
 
         #endregion
@@ -95,19 +77,11 @@ namespace Util
             _sourceDictionary.CopyTo(array, arrayIndex);            
         }
 
-        public int Count
-        {
-            get
-            {
-                // //Contract.Ensures(// Contract.Result<int>() == _sourceDictionary.Count);
-                return _sourceDictionary.Count;
-            }
-        }
+        public int Count =>
+            // //Contract.Ensures(// Contract.Result<int>() == _sourceDictionary.Count);
+            _sourceDictionary.Count;
 
-        public bool IsReadOnly
-        {
-            get { return true; }
-        }
+        public bool IsReadOnly => true;
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
         {

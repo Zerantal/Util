@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
+// ReSharper disable InconsistentNaming
+// ReSharper disable UnusedMember.Global
+// ReSharper disable IdentifierTypo
 
 namespace Util.JavaAccessBridge
 {
     public static class JAB
     {
-        static bool _isJABInitialized = false;
-
         public static void InitializeJAB()
         {
-            if (_isJABInitialized)
+            if (IsJABInitialized)
                 return;
 
             if (Application.MessageLoop == false)
@@ -25,10 +22,10 @@ namespace Util.JavaAccessBridge
             UnsafeNativeMethods.Windows_run();
             Application.DoEvents(); // complete initialisation
 
-            _isJABInitialized = true;
+            IsJABInitialized = true;
         }
 
-        static public bool IsJABInitialized { get { return _isJABInitialized; } }
+        public static bool IsJABInitialized { get; private set; }
 
         #region Convenient methods
 
@@ -37,25 +34,20 @@ namespace Util.JavaAccessBridge
         {
             // //Contract.Requires<JABException>(JAB.IsJABInitialized, "Java Access Bridge is not initialized");           
 
-            bool success;
-            IntPtr ac = IntPtr.Zero, vmIDPtr;
             List<JavaControl> controls = new List<JavaControl>();
 
             ReadOnlyCollection<Tuple<string, IntPtr>> desktopWindows = WinApiWrapper.GetDesktopWindows();
 
-            foreach (Tuple<string, IntPtr> win in desktopWindows)
+            foreach (var (_, wndHandle) in desktopWindows)
             {
-
                 // is window a java window?
-                success = UnsafeNativeMethods.isJavaWindow(win.Item2);
+                var success = UnsafeNativeMethods.isJavaWindow(wndHandle);
+                if (!success) continue;
+                // get accessible context
+                success = UnsafeNativeMethods.getAccessibleContextFromHWND(wndHandle, out var vmIDPtr, out var ac);
                 if (success)
                 {
-                    // get accessible context
-                    success = UnsafeNativeMethods.getAccessibleContextFromHWND(win.Item2, out  vmIDPtr, out ac);
-                    if (success)
-                    {
-                        controls.Add(new JavaControl(vmIDPtr.ToInt32(), ac));
-                    }
+                    controls.Add(new JavaControl(vmIDPtr.ToInt32(), ac));
                 }
             }
 
@@ -66,10 +58,7 @@ namespace Util.JavaAccessBridge
         {
             // //Contract.Ensures(// Contract.Result<JavaControl>() != null);
 
-            bool success;            
-            IntPtr ac = IntPtr.Zero, vmIDPtr;
-
-            if (!JAB.IsJABInitialized)
+            if (!IsJABInitialized)
                 throw new JABException("Java Access Bridge is not initialized.");
 
             // is window handle valid?
@@ -77,14 +66,14 @@ namespace Util.JavaAccessBridge
                 throw new JABException("Window handle does not identify a window.");
 
             // is window a java window?
-            success = UnsafeNativeMethods.isJavaWindow(windowHandle);
+            var success = UnsafeNativeMethods.isJavaWindow(windowHandle);
             if (!success)
             {
                 throw new JABException("Window handle does not identify a java window.");
             }
 
             // get accessible context
-            success = UnsafeNativeMethods.getAccessibleContextFromHWND(windowHandle, out vmIDPtr, out ac);
+            success = UnsafeNativeMethods.getAccessibleContextFromHWND(windowHandle, out var vmIDPtr, out var ac);
             if (!success)
             {
                throw new JABException("Unable to acquire the accessible context for window!");
@@ -93,19 +82,14 @@ namespace Util.JavaAccessBridge
             return new JavaControl(vmIDPtr.ToInt32(), ac);
         }    
 
-        public static AccessBridgeVersionInfo GetVersionInfo(Int32 virtualMachineId)
+        public static AccessBridgeVersionInfo GetVersionInfo(int virtualMachineId)
         {
-            AccessBridgeVersionInfo versionInfo;
+            bool success = UnsafeNativeMethods.getVersionInfo(virtualMachineId, out var versionInfo);
 
-            bool success = UnsafeNativeMethods.getVersionInfo(virtualMachineId, out versionInfo);
+            if (success) return versionInfo;
+            Trace.TraceWarning("Call to getVersionInfo failed.");
+            return new AccessBridgeVersionInfo();
 
-            if (!success)
-            {
-                Trace.TraceWarning("Call to getVersionInfo failed.");
-                return new AccessBridgeVersionInfo();
-            }
-
-            return versionInfo;
         }
 
         #endregion

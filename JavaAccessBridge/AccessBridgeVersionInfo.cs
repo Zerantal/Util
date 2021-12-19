@@ -1,31 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+// ReSharper disable UnassignedGetOnlyAutoProperty
+// ReSharper disable UnusedMember.Global
 
 namespace Util.JavaAccessBridge
 {
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public struct AccessBridgeVersionInfo 
+    public readonly struct AccessBridgeVersionInfo 
     {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)]
-        private string _VMversion;               // version of the Java VM
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)]
-        private string _bridgeJavaClassVersion;  // version of the AccessBridge.class
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)]
-        private string _bridgeJavaDLLVersion;    // version of JavaAccessBridge.dll
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)]
-        private string _bridgeWinDLLVersion;     // version of WindowsAccessBridge.dll
+        [field: MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)] public string VirtualMachineVersion
+        {
+            get;
+        }
 
+        [field: MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)] public string BridgeJavaClassVersion
+        {
+            get;
+        }
 
-        public string VirtualMachineVersion { get { return _VMversion; } }
+        [field: MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)] public string BridgeJavaDllVersion
+        {
+            get;
+        }
 
-        public string BridgeJavaClassVersion { get { return _bridgeJavaClassVersion; } }
-
-        public string BridgeJavaDllVersion { get { return _bridgeJavaDLLVersion; } }
-
-        public string BridgeWinDllVersion { get { return _bridgeWinDLLVersion; } }
+        [field: MarshalAs(UnmanagedType.ByValTStr, SizeConst = JABConstants.ShortStringSize)] public string BridgeWinDllVersion
+        {
+            get;
+        }
     }
 }

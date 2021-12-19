@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 
 namespace Util
 {
+    // ReSharper disable once UnusedMember.Global
     public class MakeIEqualityComparer<T> : IEqualityComparer<T>
     {
         private readonly Func<T, T, bool> _comparer;

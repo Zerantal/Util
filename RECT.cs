@@ -6,18 +6,18 @@ namespace Util
     // add a reference to system.drawing.dll
     // Note: backing fields were added because structs don't automatically supply them.
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RECT
+    internal readonly struct Rect
     {
-        int _left;
-        int _top;
-        int _right;
-        int _bottom;
+        private readonly int _left;
+        private readonly int _top;
+        private readonly int _right;
+        private readonly int _bottom;
 
-        public RECT(global::System.Drawing.Rectangle rectangle)
+        public Rect(Rectangle rectangle)
             : this(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom)
         {
         }
-        public RECT(int left, int top, int right, int bottom)
+        public Rect(int left, int top, int right, int bottom)
         {
             _left = left;
             _top = top;
@@ -27,7 +27,7 @@ namespace Util
 
         internal Rectangle ToRectangle()
         {
-            return new global::System.Drawing.Rectangle(this._left, this._top, _right - _left, _bottom - _top);
+            return new Rectangle(_left, _top, _right - _left, _bottom - _top);
         }
         /*         
                 internal static RECT FromRectangle(Rectangle Rectangle)
@@ -37,24 +37,23 @@ namespace Util
                 */
         public override string ToString() => "{Left: " + _left + "; " + "Top: " + _top + "; Right: " + _right + "; Bottom: " + _bottom + "}";
 
-        internal bool Equals(RECT Rectangle)
+        internal bool Equals(Rect rectangle)
         {
-            return Rectangle._left == _left && Rectangle._top == _top 
-                && Rectangle._right == _right && Rectangle._bottom == _bottom;
+            return rectangle._left == _left && rectangle._top == _top 
+                && rectangle._right == _right && rectangle._bottom == _bottom;
         }
 
-        public override bool Equals(object Object)
+        public override bool Equals(object @object)
         {
-            if (Object is RECT)
+            switch (@object)
             {
-                return Equals((RECT)Object);
+                case Rect rect:
+                    return Equals(rect);
+                case Rectangle rectangle:
+                    return Equals(new Rect(rectangle));
+                default:
+                    return false;
             }
-            else if (Object is Rectangle)
-            {
-                return Equals(new RECT((global::System.Drawing.Rectangle)Object));
-            }
-
-            return false;
         }
 
         public override int GetHashCode()

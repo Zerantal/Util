@@ -1,29 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
+// ReSharper disable UnusedMember.Global
 
 namespace Util.JavaAccessBridge
 {
     public class JavaButtonControl : JavaControl
     {
 
-        internal JavaButtonControl(Int32 vmID, IntPtr ac)
-            : base(vmID, ac)
+        internal JavaButtonControl(int vmId, IntPtr ac)
+            : base(vmId, ac)
         {
             // // Contract.Requires(JAB.IsJABInitialized);
         }
 
         public void Click()
-        {            
-            IntPtr failure;
-            
+        {
             AccessibleActionsToDo actions = new AccessibleActionsToDo();
             // Contract.Assume(actions.ActionsCount == 0);
             actions.AddAction("click");
 
-            bool result = UnsafeNativeMethods.doAccessibleActions(this.VirtualMachineId, this.AccessibleContext, ref actions, out failure);
+            bool result = UnsafeNativeMethods.doAccessibleActions(VirtualMachineId, AccessibleContext, ref actions, out _);
 
             if (result == false)
                 throw new JABException("Click action failed.");            

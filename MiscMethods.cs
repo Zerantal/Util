@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Diagnostics.Contracts;
 using System.Drawing.Imaging;
@@ -9,24 +6,24 @@ using System.Drawing.Imaging;
 
 namespace Util
 {
-    static public class MiscMethods
+    // ReSharper disable once UnusedMember.Global
+    public static class MiscMethods
     {
 
+        // ReSharper disable once UnusedMember.Global
         public static Bitmap GrabScreenshot(string caption)
         {
             // // Contract.Requires(caption != null);
 
-            IntPtr winHandle;
             Bitmap winImage = null;
-            Rectangle srcRect;
 
             try
             {
-                winHandle = WinApiWrapper.FindWindow(caption);
+                var winHandle = WinApiWrapper.FindWindow(caption);
 
                 WinApiWrapper.SetForegroundWindow(winHandle);
 
-                srcRect = WinApiWrapper.GetWindowRectangle(winHandle);
+                var srcRect = WinApiWrapper.GetWindowRectangle(winHandle);
 
                 int width = srcRect.Right - srcRect.Left;
                 int height = srcRect.Bottom - srcRect.Top;
@@ -44,20 +41,16 @@ namespace Util
 
                 screenG.Dispose();
             }
-            catch (WinApiException)
-            {
-                throw;
-            }
             finally
             {
-                if (winImage != null)
-                    winImage.Dispose();
+                winImage?.Dispose();
             }
 
             return winImage;
         }
 
         
+        // ReSharper disable once UnusedMember.Global
         public static bool ImagesEqual(Bitmap lhs,Bitmap rhs, int allowedDifference)
         {
             // // Contract.Requires(allowedDifference >= 0);
@@ -69,19 +62,19 @@ namespace Util
 
             if (lhs == null || rhs == null)
                 return false;
-            if (lhs.Width != rhs.Width || lhs.Height != lhs.Height)
+            if (lhs.Width != rhs.Width || lhs.Height != rhs.Height)
                 return false;
 
 
-            BitmapData bmd1 = lhs.LockBits(new Rectangle(0, 0, 10, 10), System.Drawing.Imaging.ImageLockMode.ReadOnly, lhs.PixelFormat);
-            BitmapData bmd2 = rhs.LockBits(new Rectangle(0, 0, 10, 10), System.Drawing.Imaging.ImageLockMode.ReadOnly, rhs.PixelFormat);
+            BitmapData bmd1 = lhs.LockBits(new Rectangle(0, 0, 10, 10), ImageLockMode.ReadOnly, lhs.PixelFormat);
+            BitmapData bmd2 = rhs.LockBits(new Rectangle(0, 0, 10, 10), ImageLockMode.ReadOnly, rhs.PixelFormat);
 
             unsafe
             {
                 for (int y = 0; y < bmd1.Height; y++)
                 {
-                    int* row1 = (int*)bmd1.Scan0 + (y * bmd1.Stride);
-                    int* row2 = (int*)bmd2.Scan0 + (y * bmd2.Stride);
+                    int* row1 = (int*)bmd1.Scan0 + y * bmd1.Stride;
+                    int* row2 = (int*)bmd2.Scan0 + y * bmd2.Stride;
                     for (int x = 0; x < bmd1.Width; x++)
                     {
                         if (row1[x] != row2[x])
@@ -93,23 +86,18 @@ namespace Util
             lhs.UnlockBits(bmd1);
             rhs.UnlockBits(bmd2);
 
-            if (pixelDiff > allowedDifference)
-                return false;
-            else
-                return true;
+            return pixelDiff <= allowedDifference;
         }
 
         [Pure]
-        public static bool Is32bppImage(Image im)
+        // ReSharper disable once UnusedMember.Global
+        public static bool Is32BppImage(Image im)
         {
             // // Contract.Requires(im != null);
-            
-            if (im.PixelFormat == PixelFormat.Format32bppArgb ||
-                im.PixelFormat == PixelFormat.Format32bppPArgb ||
-                im.PixelFormat == PixelFormat.Format32bppRgb)
-                return true;
-            else
-                return false;            
+
+            return im.PixelFormat == PixelFormat.Format32bppArgb ||
+                   im.PixelFormat == PixelFormat.Format32bppPArgb ||
+                   im.PixelFormat == PixelFormat.Format32bppRgb;
         }
     }
 }

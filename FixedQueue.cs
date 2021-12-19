@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+// ReSharper disable UnusedMember.Global
 
 namespace Util
 {
+    // ReSharper disable once UnusedMember.Global
     public class FixedQueue<T> : Queue<T>
     {
-        private int size = -1;
-
-        public int FixedSize
-        {
-            get { return size; }
-            set { size = value; }
-        }
+        public int FixedSize { get; set; }
 
         public FixedQueue(int fixedSize)
             : base(fixedSize)
         {
-            this.FixedSize = fixedSize;
+            FixedSize = fixedSize;
         }
 
         public new void Enqueue(T item)
         {
-            while (this.Count >= this.FixedSize)
+            while (Count >= FixedSize)
             {
-                this.Dequeue();
+                Dequeue();
             }
             base.Enqueue(item);
         }

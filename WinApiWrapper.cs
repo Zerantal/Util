@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Threading;
-using System.Diagnostics.Contracts;
 using System.Collections.ObjectModel;
+// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
+// ReSharper disable UnusedMember.Local
 
 namespace Util
 {
-    static public class WinApiWrapper
+    public static class WinApiWrapper
     {
         public const int PostMouseDelay = 250; //quarter of a second
-        const int MAXTITLE = 255;
+        private const int MAXTITLE = 255;
 
         private const int MOUSEEVENTF_MOVE = 0x00000001;
         private const int MOUSEEVENTF_LEFTDOWN = 0x00000002;
@@ -38,7 +39,7 @@ namespace Util
 
             string title = GetWindowText(hWnd);
             if (title != null)
-                openWindows.Add(new Tuple<string, IntPtr>(title, hWnd));
+                openWindows?.Add(new Tuple<string, IntPtr>(title, hWnd));
             return true;
         }
        
@@ -66,7 +67,7 @@ namespace Util
         {
             object openWindows = new List<Tuple<string, IntPtr>>();
            
-            NativeMethods.EnumDelegate enumfunc = new NativeMethods.EnumDelegate(AddWindowTitleToList);
+            NativeMethods.EnumDelegate enumfunc = AddWindowTitleToList;
             IntPtr hDesktop = IntPtr.Zero; // current desktop
             bool success = NativeMethods.EnumDesktopWindows(hDesktop, enumfunc, ref openWindows);
 
@@ -75,21 +76,18 @@ namespace Util
                 // Get the last Win32 error code
                 int errorCode = Marshal.GetLastWin32Error();
 
-                throw new WinApiException("Failed to enumerate desktop windows.", sourceDll: "user32.dll",
-                    invokedFunction: "EnumDesktopWindows", errorCode: errorCode); 
+                throw new WinApiException("Failed to enumerate desktop windows.", "user32.dll",
+                    "EnumDesktopWindows", errorCode); 
 
             }
-            else
-            {
-                List<Tuple<String, IntPtr>> retList = openWindows as List<Tuple<string, IntPtr>>;
 
-                if (retList != null)
-                    return new ReadOnlyCollection<Tuple<string, IntPtr>>(retList);
-                else // wrap empty list (shouldn't get here)
-                    return new ReadOnlyCollection<Tuple<string, IntPtr>>(new List<Tuple<string, IntPtr>>());
-            }
+            if (openWindows is List<Tuple<string, IntPtr>> retList)
+                return new ReadOnlyCollection<Tuple<string, IntPtr>>(retList);
+
+            return new ReadOnlyCollection<Tuple<string, IntPtr>>(new List<Tuple<string, IntPtr>>());
         }
 
+        // ReSharper disable once UnusedMember.Global
         public static void MouseLeftClick(int xValue, int yValue)
         {            
             Cursor.Position = new Point(xValue, yValue);
@@ -110,18 +108,14 @@ namespace Util
 
         public static Rectangle GetWindowRectangle(IntPtr winHandle)
         {
-            RECT winRect;
+            if (NativeMethods.GetWindowRect(winHandle, out var winRect)) return winRect.ToRectangle();
 
-            if (!NativeMethods.GetWindowRect(winHandle, out winRect))
-            {
-                // Get the last Win32 error code
-                int errorCode = Marshal.GetLastWin32Error();
+            // Get the last Win32 error code
+            int errorCode = Marshal.GetLastWin32Error();
 
-                throw new WinApiException("Failed to get window dimensions.", sourceDll: "user32.dll",
-                    invokedFunction: "GetWindowRect", errorCode: errorCode);  
-            }
+            throw new WinApiException("Failed to get window dimensions.", "user32.dll",
+                "GetWindowRect", errorCode);
 
-            return winRect.ToRectangle();
         }
 
         public static IntPtr FindWindow(string caption)

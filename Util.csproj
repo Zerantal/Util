@@ -122,11 +122,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FixedQueue.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IDeepCloneable.cs" />
-    <Compile Include="IDeepCloneableContract.cs" />
     <Compile Include="IShallowCloneable.cs" />
-    <Compile Include="IShallowCloneableContract.cs" />
     <Compile Include="JavaAccessBridge\AccessibleActionsInfo.cs" />
     <Compile Include="JavaAccessBridge\AccessibleActionsToDo.cs" />
     <Compile Include="JavaAccessBridge\AccessibleTextItemsInfo.cs" />
@@ -174,11 +171,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="CustomDictionary.xml">
-      <SubType>Designer</SubType>
-    </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CommandLineParsing\" />

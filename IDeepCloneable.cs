@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace Util
+﻿namespace Util
 {
-    [ContractClass(typeof(IDeepCloneableContract<>))]
     public interface IDeepCloneable<out T>
     {
         T DeepClone();

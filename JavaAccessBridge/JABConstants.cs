@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿// ReSharper disable InconsistentNaming
 namespace Util.JavaAccessBridge
 {
-    static public class JABConstants
+    public static class JABConstants
     {
         public const int MaxStringSize = 1024;
 

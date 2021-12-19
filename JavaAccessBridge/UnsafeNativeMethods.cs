@@ -1,57 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+// ReSharper disable CommentTypo
 
 namespace Util.JavaAccessBridge
 {
     internal static class UnsafeNativeMethods
     {        
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
-        internal extern static void Windows_run();
+        internal static extern void Windows_run();
         
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool isJavaWindow(IntPtr window);
+        internal static extern bool isJavaWindow(IntPtr window);
         
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool getAccessibleContextFromHWND(IntPtr window, out IntPtr vmID, out IntPtr accessibleContext);      
+        internal static extern bool getAccessibleContextFromHWND(IntPtr window, out IntPtr vmId, out IntPtr accessibleContext);      
 
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool getAccessibleContextInfo(Int32 vmID, IntPtr accessibleContext, out AccessibleContextInfo info);
+        internal static extern bool getAccessibleContextInfo(int vmId, IntPtr accessibleContext, out AccessibleContextInfo info);
         
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool getVersionInfo(Int32 vmID, out AccessBridgeVersionInfo info);        
+        internal static extern bool getVersionInfo(int vmId, out AccessBridgeVersionInfo info);        
 
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
-        internal extern static IntPtr getAccessibleChildFromContext(Int32 vmID, IntPtr accessibleContext, Int32 childIdx);
+        internal static extern IntPtr getAccessibleChildFromContext(int vmId, IntPtr accessibleContext, int childIdx);
 
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool getVirtualAccessibleName(Int32 vmID, IntPtr accessibleContext,
-            [MarshalAs(UnmanagedType.LPWStr)] StringBuilder name, Int32 nameLength);
+        internal static extern bool getVirtualAccessibleName(int vmId, IntPtr accessibleContext,
+            [MarshalAs(UnmanagedType.LPWStr)] StringBuilder name, int nameLength);
 
         /*
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
         internal extern static IntPtr getTopLevelObject(Int32 vmID, IntPtr accessibleContext);
         */
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
-        internal extern static void releaseJavaObject(Int32 vmID, IntPtr javaObject);
+        internal static extern void releaseJavaObject(int vmId, IntPtr javaObject);
 
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl)]
-        internal extern static IntPtr getAccessibleParentFromContext(Int32 vmID, IntPtr accessibleContext);
+        internal static extern IntPtr getAccessibleParentFromContext(int vmId, IntPtr accessibleContext);
 
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool setTextContents(Int32 vmID, IntPtr accessibleContext, string text);
+        internal static extern bool setTextContents(int vmId, IntPtr accessibleContext, string text);
 
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool doAccessibleActions(Int32 vmID, IntPtr accessibleCont, ref AccessibleActionsToDo actionsToDo, out IntPtr failure);
+        internal static extern bool doAccessibleActions(int vmId, IntPtr accessibleCont, ref AccessibleActionsToDo actionsToDo, out IntPtr failure);
         /*
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         internal extern static bool getAccessibleKeyBindings(Int32 vmID, IntPtr ac, out AccessibleKeyBindings keyBindings);
@@ -62,10 +61,10 @@ namespace Util.JavaAccessBridge
         */
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool getAccessibleTextInfo(Int32 vmID, IntPtr at, out AccessibleTextInfo textInfo, Int32 x, Int32 y);
+        internal static extern bool getAccessibleTextInfo(int vmId, IntPtr at, out AccessibleTextInfo textInfo, int x, int y);
 
         [DllImport("WindowsAccessBridge.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal extern static bool getAccessibleTextItems(Int32 vmID, IntPtr at, out AccessibleTextItemsInfo textItems, Int32 index);
+        internal static extern bool getAccessibleTextItems(int vmId, IntPtr at, out AccessibleTextItemsInfo textItems, int index);
     }
 }

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
+// ReSharper disable InconsistentNaming
 
 namespace Util.JavaAccessBridge
 {
     [Serializable]
-    public class JABException : Exception, ISerializable
+    public class JABException : Exception
     {
-        public JABException() : base()
+        public JABException()
         {        
         }
 

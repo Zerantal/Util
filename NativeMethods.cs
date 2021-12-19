@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
@@ -27,7 +25,7 @@ namespace Util
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+        internal static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
 
         [DllImport("user32.dll")]
         internal static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, IntPtr dwExtraInfo);
